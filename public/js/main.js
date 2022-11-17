@@ -5,35 +5,14 @@ $(document).ready(function () { });
 // ------------------------------
 function build_select_field_type() {
 	let arr = [];
-	arr.push("<div class='col'>");
+	arr.push("<div class='col-3'>");
 	arr.push("<select class='form-select template-field form-control' name='type'>");
-	arr.push("<option selected>Select field type</option>");
-	arr.push("<option value='string'>string</option>");
-	arr.push("<option value='bool'>bool</option>");
-	arr.push("<option value='datetime'>datetime</option>");
-	arr.push("<option value='number'>number</option>");
+	arr.push("<option selected>Select Field Type</option>");
+	arr.push("<option value='string'>String</option>");
+	arr.push("<option value='bool'>Bool</option>");
+	arr.push("<option value='datetime'>Date Time</option>");
+	arr.push("<option value='number'>Number</option>");
 	arr.push("</select>");
-	arr.push("</div>");
-	return arr.join("");
-}
-
-// ------------------------------
-function build_dropdown_field_type() {
-	let arr = [];
-	arr.push("<div class='col'>");
-	arr.push('<div class="dropdown">');
-	arr.push(
-		'<button class="btn btn-secondary dropdown-toggle" type="button" data-toggle="dropdown">'
-	);
-	arr.push("Select field type");
-	arr.push("</button>");
-	arr.push('<div class="dropdown-menu">');
-	arr.push('<a class="dropdown-item">String</a>');
-	arr.push('<a class="dropdown-item">Bool</a>');
-	arr.push('<a class="dropdown-item">Number</a>');
-	arr.push('<a class="dropdown-item">Date Time</a>');
-	arr.push("</div>");
-	arr.push("</div>");
 	arr.push("</div>");
 	return arr.join("");
 }
@@ -56,14 +35,14 @@ $("#add_field").on("click", function (e) {
 	// create html input fields
 	arr.push('<div class="row form-group" style="margin-bottom: 10px; margin-top: 10px; ">');
 	arr.push(
-		'<div class="col"><input type="text" class="form-control template-field" placeholder="Field Name" name="name"/></div>'
+		'<div class="col-3"><input type="text" class="form-control template-field" placeholder="Field Name" name="name"/></div>'
 	);
 	arr.push(
-		'<div class="col"><input type="text" class="form-control template-field" placeholder="Description" name="description"/></div>'
+		'<div class="col-3"><input type="text" class="form-control template-field" placeholder="Description" name="description"/></div>'
 	);
 	arr.push(build_select_field_type());
 	arr.push(
-		'<div class="col"><button class="btn btn-danger" onclick="delete_row(this); return false;"><i class="fa-solid fa-trash"></i></button></div>'
+		'<div class="col-3"><button class="btn btn-danger" onclick="delete_row(this); return false;"><i class="fa-solid fa-trash"></i></button></div>'
 	);
 	arr.push("</div>");
 
@@ -71,12 +50,46 @@ $("#add_field").on("click", function (e) {
 });
 
 // ------------------------------
+// send data to server
+// request: auth_token, JSON ["data": {"credential_template_title":"", "credential_template_fields":[{"name":"", "type":"", "description": ""}]}
+function send_data_to_server(field_data) {
+	let data = {};
+
+	data['auth_token'] = "CiVodHRwczovL3RyaW5zaWMuaWQvc2VjdXJpdHkvdjEvb2Jlcm9uEmAKKnVybjp0cmluc2ljOndhbGxldHM6TmFBUVpvN3FDWWdrMk45TExta1RUQiIydXJuOnRyaW5zaWM6ZWNvc3lzdGVtczp2aWdvcm91cy1rZWxsZXItRllSR2ZkRVdaWHQaMJK76tJBHrph2GiNhsBiS6oH7YbkvoF7ESrWLjKxiPy8rZFyxrBO8ZyHqBwxdPYA1CIA"
+
+	// acquire credential titile
+	data['credential_template_title'] = $("#credential_title").val();
+
+	data['credential_template_fields'] = JSON.stringify(field_data);
+
+	// send authtoken, fields and title to server
+	$.ajax({
+		dataType: 'json',
+		data: data,
+		url: " http://939c-105-186-161-154.ngrok.io/createCredentialTemplate",
+		method: "POST",
+		type: "POST",
+		success: function (result) {
+			console.log(result);
+		},
+	});
+
+	// $.ajax({
+	// 	dataType: 'jsonp',
+	// 	url: ` http://939c-105-186-161-154.ngrok.io/createCredentialTemplate/${data['auth_token']}/${data['credential_template_title']}/${data['credential_template_fields']}`,
+	// 	type: "GET",
+	// 	contentType: "application/json",
+	// 	success: function (result) {
+	// 		console.log(result);
+	// 	},
+	// });
+}
+
+// ------------------------------
 $("#show_fields").submit(function (e) {
 	e.preventDefault();
-	console.log($(this).serializeArray());
 	const arr = transform_rows_to_object($(this).serializeArray());
-
-
+	send_data_to_server(arr);
 });
 
 // ------------------------------
@@ -101,11 +114,12 @@ function transform_rows_to_object(arr) {
 
 	});
 
-	console.log(new_obj_arr);
 	return new_obj_arr;
 }
 
 // ------------------------------
 // [x] display input fields
-// get input field data
+// [x] get input field data
 // confirmation dialog popup
+// field validation
+// dropdown selected validation
