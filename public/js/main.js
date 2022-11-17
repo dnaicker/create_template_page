@@ -6,8 +6,7 @@ $(document).ready(function () { });
 function build_select_field_type() {
 	let arr = [];
 	arr.push("<div class='col-3'>");
-	arr.push("<select class='form-select template-field form-control' name='type'>");
-	arr.push("<option selected>Select Field Type</option>");
+	arr.push("<select class='form-select template-field form-control' name='type' required >");
 	arr.push("<option value='string'>String</option>");
 	arr.push("<option value='bool'>Bool</option>");
 	arr.push("<option value='datetime'>Date Time</option>");
@@ -21,7 +20,7 @@ function build_select_field_type() {
 // add row with input fields
 function delete_row(element) {
 
-	show_confirmation_modal('Delete Row', 'Are you sure you want to delete this row?', function() {
+	show_confirmation_modal('Delete Row', 'Are you sure you want to delete this row?', function () {
 		console.log('delete row');
 		$(element).parent().parent().remove();
 	});
@@ -37,10 +36,10 @@ $("#add_field").on("click", function (e) {
 	// create html input fields
 	arr.push('<div class="row form-group" style="margin-bottom: 10px; margin-top: 10px; ">');
 	arr.push(
-		'<div class="col-3"><input type="text" class="form-control template-field" placeholder="Field Name" name="name"/></div>'
+		'<div class="col-3"><input required type="text" class="form-control template-field" placeholder="Field Name" name="name"/></div>'
 	);
 	arr.push(
-		'<div class="col-3"><input type="text" class="form-control template-field" placeholder="Description" name="description"/></div>'
+		'<div class="col-3"><input required type="text" class="form-control template-field" placeholder="Description" name="description"/></div>'
 	);
 	arr.push(build_select_field_type());
 	arr.push(
@@ -73,7 +72,7 @@ function send_data_to_server(field_data) {
 		type: "POST",
 		success: function (result) {
 			console.log(result);
-			show_modal('Success','<b>'+ result.name + '</b> was created successfully');
+			show_modal('Success', '<b>' + result.name + '</b> was created successfully');
 		},
 	});
 }
@@ -82,8 +81,34 @@ function send_data_to_server(field_data) {
 $("#show_fields").submit(function (e) {
 	e.preventDefault();
 	const arr = transform_rows_to_object($(this).serializeArray());
-	send_data_to_server(arr);
+	if(validate_form()) {
+		send_data_to_server(arr);
+	}
 });
+
+// ------------------------------
+// validate if input fields have values
+function validate_form() {
+	const credential_template_form = document.getElementById('show_fields')
+	credential_template_form.classList.add('was-validated');
+	const title_valid = $("#credential_title").val().length > 0 ? true : false;
+	const input_fields_valid = $("#show_fields").serializeArray().length > 0 ? true : false;
+	
+	if(title_valid === false) {
+		show_modal('Error', 'Please enter a title for the credential template');
+		return;
+	}
+
+	if(input_fields_valid === false) {
+		show_modal('Error', 'Please add at least one field');
+		return;
+	}
+
+	if (credential_template_form.checkValidity() === false) {
+		return false;
+	}
+	return true;
+}
 
 // ------------------------------
 function transform_rows_to_object(arr) {
