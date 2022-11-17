@@ -21,8 +21,10 @@ function build_select_field_type() {
 // add row with input fields
 function delete_row(element) {
 
-	console.log('delete row');
-	$(element).parent().parent().remove();
+	show_confirmation_modal('Delete Row', 'Are you sure you want to delete this row?', function() {
+		console.log('delete row');
+		$(element).parent().parent().remove();
+	});
 };
 
 // ------------------------------
@@ -71,18 +73,9 @@ function send_data_to_server(field_data) {
 		type: "POST",
 		success: function (result) {
 			console.log(result);
+			show_modal('Success','<b>'+ result.name + '</b> was created successfully');
 		},
 	});
-
-	// $.ajax({
-	// 	dataType: 'jsonp',
-	// 	url: ` http://939c-105-186-161-154.ngrok.io/createCredentialTemplate/${data['auth_token']}/${data['credential_template_title']}/${data['credential_template_fields']}`,
-	// 	type: "GET",
-	// 	contentType: "application/json",
-	// 	success: function (result) {
-	// 		console.log(result);
-	// 	},
-	// });
 }
 
 // ------------------------------
@@ -115,6 +108,27 @@ function transform_rows_to_object(arr) {
 	});
 
 	return new_obj_arr;
+}
+
+// ------------------------------
+
+
+// ------------------------------
+function show_modal(header, body) {
+	$("#modal_header")[0].innerHTML = header;
+	$("#modal_body")[0].innerHTML = "<p>" + body + "</p>";
+	$("#modal").modal('show');
+}
+
+// ------------------------------
+function show_confirmation_modal(header, body, confirm_callback) {
+	$("#confirmation_modal_header")[0].innerHTML = header;
+	$("#confirmation_modal_body")[0].innerHTML = "<p>" + body + "</p>";
+	$("#confirmation_modal").modal('show');
+	$("#modal_button_confirm").on("click", function (e) {
+		confirm_callback();
+		$("#confirmation_modal").modal('hide');
+	});
 }
 
 // ------------------------------
