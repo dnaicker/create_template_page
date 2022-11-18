@@ -46,8 +46,12 @@
   <div class="container">
     <h2 style="margin-bottom: 20px;margin-top: 20px;">Create Credential Template</h2>
     <!--  title -->
-    <input class="form-control template-field" type="text" id="credential_title" name="credential_title"
+    <div class="form-floating">
+      <input class="form-control template-field" type="text" id="credential_title" name="credential_title"
       placeholder="Enter Credential Title" style="margin-bottom: 20px; width: 500px"/>
+      <label>Enter Credential Title</label>
+    </div>
+    
 
     <!-- generate input fields -->
     <form id="show_fields" class="container" style="margin-top: 10px; margin-left: -10px; " novalidate>
@@ -63,43 +67,9 @@
 
     </form>
   </div>
-
-  <!-- generic modal for display results -->
-  <div id="modal" class="modal" tabindex="-1">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="modal_header"></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div id="modal_body"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Okay</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- generic confirmation modal for display results -->
-  <div id="confirmation_modal" class="modal" tabindex="-1">
-    <div class="modal-dialog modal-md">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="confirmation_modal_header"></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          <div id="confirmation_modal_body"></div>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-bs-dismiss="modal">Cancel</button>
-          <button type="button" class="btn btn-primary" id="modal_button_confirm">Confirm</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  
+  <!-- load modals -->
+  <div id="modal_load"></div>
 </body>
 
 </html>

@@ -1,6 +1,10 @@
+const ngrok_url = "http://d9e6-105-224-241-222.ngrok.io";
+
 // ------------------------------
 // on load
-$(document).ready(function () { });
+$(document).ready(function () { 
+	$( "#modal_load" ).load( "modal.html" );
+});
 
 // ------------------------------
 function build_select_field_type() {
@@ -36,10 +40,10 @@ $("#add_field").on("click", function (e) {
 	// create html input fields
 	arr.push('<div class="row form-group" style="margin-bottom: 10px; margin-top: 10px; ">');
 	arr.push(
-		'<div class="col-3"><input required type="text" class="form-control template-field" placeholder="Field Name" name="name"/></div>'
+		'<div class="col-3"><input required type="text" class="form-control template-field" placeholder="Field Name" name="name"></input></div>'
 	);
 	arr.push(
-		'<div class="col-3"><input required type="text" class="form-control template-field" placeholder="Description" name="description"/></div>'
+		'<div class="col-3"><input required type="text" class="form-control template-field" placeholder="Description" name="description"/></input></div>'
 	);
 	arr.push(build_select_field_type());
 	arr.push(
@@ -67,8 +71,7 @@ function send_data_to_server(field_data) {
 	$.ajax({
 		dataType: 'json',
 		data: data,
-		url: " http://939c-105-186-161-154.ngrok.io/createCredentialTemplate",
-		method: "POST",
+		url: `${ngrok_url}/createCredentialTemplate`,
 		type: "POST",
 		success: function (result) {
 			console.log(result);
@@ -96,17 +99,15 @@ function validate_form() {
 	
 	if(title_valid === false) {
 		show_modal('Error', 'Please enter a title for the credential template');
-		return;
-	}
-
-	if(input_fields_valid === false) {
+		return false;
+	} else if(input_fields_valid === false) {
 		show_modal('Error', 'Please add at least one field');
-		return;
-	}
-
-	if (credential_template_form.checkValidity() === false) {
+		return false;
+	} else if (credential_template_form.checkValidity() === false) {
+		show_modal('Error', 'Please complete filling in all input fields');
 		return false;
 	}
+
 	return true;
 }
 
