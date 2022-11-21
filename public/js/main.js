@@ -40,14 +40,14 @@ $("#add_field").on("click", function (e) {
 	// create html input fields
 	arr.push('<div class="row form-group" style="margin-bottom: 10px; margin-top: 10px; ">');
 	arr.push(
-		'<div class="col-3"><input required type="text" class="form-control template-field" placeholder="Field Name" name="name"></input></div>'
+		'<div class="col-4"><input required type="text" class="form-control template-field" placeholder="Field Name" name="name"></input></div>'
 	);
 	arr.push(
-		'<div class="col-3"><input required type="text" class="form-control template-field" placeholder="Description" name="description"/></input></div>'
+		'<div class="col-4"><input required type="text" class="form-control template-field" placeholder="Description" name="description"/></input></div>'
 	);
 	arr.push(build_select_field_type());
 	arr.push(
-		'<div class="col-3"><button class="btn btn-danger" onclick="delete_row(this); return false;"><i class="fa-solid fa-trash"></i></button></div>'
+		'<div class="col-1"><button class="btn btn-block btn-danger" style="width: 100%" onclick="delete_row(this); return false;"><i class="fa-solid fa-trash"></i></button></div>'
 	);
 	arr.push("</div>");
 
