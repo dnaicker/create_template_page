@@ -1,15 +1,39 @@
-const ngrok_url = " http://6263-146-64-79-183.ngrok.io";
+const ngrok_url = "http://676b-41-13-76-95.ngrok.io";
 
 // ------------------------------
 // on load
-$(document).ready(function () { 
-	$( "#modal_load" ).load( "modal.html" );
+$(document).ready(function () {
+	$("#modal_load").load("modal.html");
 });
+
+// ------------------------------
+const UUIDv4 = function b(a) { return a ? (a ^ Math.random() * 16 >> a / 4).toString(16) : ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, b) }
+
+// ------------------------------
+function build_optional_field_selection() {
+	let arr = [];
+	const random = UUIDv4();
+	arr.push('<div class="col-md-2" id="optional_' + UUIDv4() + '">');
+	arr.push('<div class="form-check">');
+	arr.push('<input class="form-check-input template-field" type="radio" name="optional_' + random + '" value="true" >');
+	arr.push('<label class="form-check-label" >');
+	arr.push('Optional');
+	arr.push('</label>');
+	arr.push('</div>');
+	arr.push('<div class="form-check">');
+	arr.push('<input class="form-check-input template-field" type="radio" name="optional_' + random + '" value="false" checked>');
+	arr.push('<label class="form-check-label" >');
+	arr.push('Mandatory');
+	arr.push('</label>');
+	arr.push('</div>');
+	arr.push('</div>');
+	return arr.join("");
+}
 
 // ------------------------------
 function build_select_field_type() {
 	let arr = [];
-	arr.push("<div class='col-3'>");
+	arr.push("<div class='col-md-2'>");
 	arr.push("<select class='form-select template-field form-control' name='type' required >");
 	arr.push("<option value='string'>String</option>");
 	arr.push("<option value='bool'>Bool</option>");
@@ -38,16 +62,19 @@ $("#add_field").on("click", function (e) {
 	let arr = [];
 
 	// create html input fields
-	arr.push('<div class="row form-group" style="margin-bottom: 10px; margin-top: 10px; ">');
+	arr.push('<div class="row form-group" style="margin-bottom: 10px; margin-top: 25px; ">');
 	arr.push(
-		'<div class="col-4"><input required type="text" class="form-control template-field" placeholder="Field Name" name="name"></input></div>'
+		'<div class="col-md-3"><input required type="text" class="form-control template-field" placeholder="Field Name" name="name"></input></div>'
 	);
 	arr.push(
-		'<div class="col-4"><input required type="text" class="form-control template-field" placeholder="Description" name="description"/></input></div>'
+		'<div class="col-md-3"><input required type="text" class="form-control template-field" placeholder="Description" name="description"/></input></div>'
 	);
+
 	arr.push(build_select_field_type());
+	arr.push(build_optional_field_selection());
+
 	arr.push(
-		'<div class="col-1"><button class="btn btn-block btn-danger" style="width: 100%" onclick="delete_row(this); return false;"><i class="fa-solid fa-trash"></i></button></div>'
+		'<div class="col-md-1"><button class="btn btn-block btn-danger" style="width: 100%" onclick="delete_row(this); return false;"><i class="fa-solid fa-trash"></i></button></div>'
 	);
 	arr.push("</div>");
 
@@ -67,6 +94,8 @@ function send_data_to_server(field_data) {
 
 	data['credential_template_fields'] = JSON.stringify(field_data);
 
+	console.log(field_data);
+
 	// send authtoken, fields and title to server
 	$.ajax({
 		dataType: 'json',
@@ -84,7 +113,7 @@ function send_data_to_server(field_data) {
 $("#show_fields").submit(function (e) {
 	e.preventDefault();
 	const arr = transform_rows_to_object($(this).serializeArray());
-	if(validate_form()) {
+	if (validate_form()) {
 		send_data_to_server(arr);
 	}
 });
@@ -96,11 +125,11 @@ function validate_form() {
 	credential_template_form.classList.add('was-validated');
 	const title_valid = $("#credential_title").val().length > 0 ? true : false;
 	const input_fields_valid = $("#show_fields").serializeArray().length > 0 ? true : false;
-	
-	if(title_valid === false) {
+
+	if (title_valid === false) {
 		show_modal('Error', 'Please enter a title for the credential template');
 		return false;
-	} else if(input_fields_valid === false) {
+	} else if (input_fields_valid === false) {
 		show_modal('Error', 'Please add at least one field');
 		return false;
 	} else if (credential_template_form.checkValidity() === false) {
@@ -118,11 +147,20 @@ function transform_rows_to_object(arr) {
 	let new_obj = {}
 	let new_obj_arr = []
 
+	console.log(arr);
+
 	arr.forEach(element => {
+		// replace optional uuid4 with optional
+		if (element.name.search(/optional_/) === 0) {
+			console.log('optional hit');
+			new_obj["optional"] = element.value;
+		} else {
+			// store normal field value
+			new_obj[element.name] = element.value;
+		}
 
-		new_obj[element.name] = element.value;
-
-		if (count >= 2) {
+		// add row contents into one object for fieldName, fieldDescription, fieldType, fieldOptional
+		if (count >= 3) {
 			count = 0;
 			new_obj_arr.push(new_obj);
 			new_obj = {};
@@ -135,9 +173,6 @@ function transform_rows_to_object(arr) {
 
 	return new_obj_arr;
 }
-
-// ------------------------------
-
 
 // ------------------------------
 function show_modal(header, body) {
