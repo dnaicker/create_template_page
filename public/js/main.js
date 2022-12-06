@@ -65,10 +65,10 @@ $("#add_field").on("click", function (e) {
 	// create html input fields
 	arr.push('<div class="row form-group" style="margin-bottom: 10px; margin-top: 25px; ">');
 	arr.push(
-		'<div class="col-md-3"><input required type="text" class="form-control template-field" placeholder="Field Name" name="name"></input></div>'
+		'<div class="col-md-3"><input required type="text" class="form-control template-field" placeholder="Technical Field Name" name="name"></input></div>'
 	);
 	arr.push(
-		'<div class="col-md-3"><input required type="text" class="form-control template-field" placeholder="Description" name="description"/></input></div>'
+		'<div class="col-md-3"><input required type="text" class="form-control template-field" placeholder="Credential Field Description" name="description"/></input></div>'
 	);
 
 	arr.push(build_select_field_type());
