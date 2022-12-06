@@ -1,4 +1,5 @@
-const ngrok_url = "http://676b-41-13-76-95.ngrok.io";
+const ngrok_url = "http://2fd6-2001-4200-7000-9-5db-c11b-2268-da25.ngrok.io";
+const auth_token = "CiVodHRwczovL3RyaW5zaWMuaWQvc2VjdXJpdHkvdjEvb2Jlcm9uEkkKKnVybjp0cmluc2ljOndhbGxldHM6N1VwRmtIUEdvektWUWNFSHVLYVZ3TSIbdXJuOnRyaW5zaWM6ZWNvc3lzdGVtczpDU0lSGjCTwP0t3e2BdAKnkSjJIJN1HMwlexAmvYBUGBzR_DEFkGZebj-IdHu48JKhMrjBdegiAA"
 
 // ------------------------------
 // on load
@@ -87,7 +88,7 @@ $("#add_field").on("click", function (e) {
 function send_data_to_server(field_data) {
 	let data = {};
 
-	data['auth_token'] = "CiVodHRwczovL3RyaW5zaWMuaWQvc2VjdXJpdHkvdjEvb2Jlcm9uEmAKKnVybjp0cmluc2ljOndhbGxldHM6TmFBUVpvN3FDWWdrMk45TExta1RUQiIydXJuOnRyaW5zaWM6ZWNvc3lzdGVtczp2aWdvcm91cy1rZWxsZXItRllSR2ZkRVdaWHQaMJK76tJBHrph2GiNhsBiS6oH7YbkvoF7ESrWLjKxiPy8rZFyxrBO8ZyHqBwxdPYA1CIA"
+	data['auth_token'] = auth_token;
 
 	// acquire credential titile
 	data['credential_template_title'] = $("#credential_title").val();
@@ -114,7 +115,7 @@ $("#show_fields").submit(function (e) {
 	e.preventDefault();
 	const arr = transform_rows_to_object($(this).serializeArray());
 	if (validate_form()) {
-		send_data_to_server(arr);
+		// send_data_to_server(arr);
 	}
 });
 
@@ -147,12 +148,24 @@ function transform_rows_to_object(arr) {
 	let new_obj = {}
 	let new_obj_arr = []
 
-	console.log(arr);
-
 	arr.forEach(element => {
+		if(count == 0) {
+			// remove spaces and add first letter uppercase to each word
+			// break string into array of words
+			let words = element.value.split(" ");
+			// capitalize first letter of each word
+			let words_two = words.splice(1).map(word => word.charAt(0).toUpperCase() + word.slice(1));
+
+			let words_three  = words.concat(words_two); 
+
+			new_obj[element.name] = words_three.join("");
+
+			console.log(new_obj);
+
+		}
+
 		// replace optional uuid4 with optional
 		if (element.name.search(/optional_/) === 0) {
-			console.log('optional hit');
 			new_obj["optional"] = element.value;
 		} else {
 			// store normal field value
