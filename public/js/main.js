@@ -115,7 +115,7 @@ $("#show_fields").submit(function (e) {
 	e.preventDefault();
 	const arr = transform_rows_to_object($(this).serializeArray());
 	if (validate_form()) {
-		// send_data_to_server(arr);
+		send_data_to_server(arr);
 	}
 });
 
@@ -149,25 +149,26 @@ function transform_rows_to_object(arr) {
 	let new_obj_arr = []
 
 	arr.forEach(element => {
-		if(count == 0) {
-			// remove spaces and add first letter uppercase to each word
-			// break string into array of words
-			let words = element.value.split(" ");
-			// capitalize first letter of each word
-			let words_two = words.splice(1).map(word => word.charAt(0).toUpperCase() + word.slice(1));
 
-			let words_three  = words.concat(words_two); 
-
-			new_obj[element.name] = words_three.join("");
-
-			console.log(new_obj);
-
-		}
 
 		// replace optional uuid4 with optional
 		if (element.name.search(/optional_/) === 0) {
 			new_obj["optional"] = element.value;
-		} else {
+		}
+		else if (count == 0) {
+			// for field names concatenate and camel case value
+
+			// break string into array of words
+			let words = element.value.split(" ");
+
+			// capitalize first letter of each word
+			let words_camel_case = words.slice(1).map(word => word.charAt(0).toUpperCase() + word.slice(1));
+
+			let words_combined = []; 
+			
+			new_obj[element.name] = words_combined.concat(words[0], words_camel_case).join("");
+		} 
+		else {
 			// store normal field value
 			new_obj[element.name] = element.value;
 		}
